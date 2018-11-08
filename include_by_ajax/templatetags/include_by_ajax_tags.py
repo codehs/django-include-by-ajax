@@ -16,9 +16,12 @@ def include_by_ajax(context, template_name, placeholder_template_name=None):
     # check if the current request is coming from a web crawler
     is_web_crawler = bool(app_config.web_crawler_pattern.search(user_agent))
     # in case of web crawler or an Ajax call we'll do full render
+    is_ajax_full_render = request.is_ajax() and request.GET.get('include_by_ajax_full_render')
+    is_test_mode_full_render = request.GET.get('include_by_ajax_full_render') and request.GET.get('test_mode')
     context['include_by_ajax_full_render'] = bool(
         is_web_crawler or
-        request.is_ajax() and request.GET.get('include_by_ajax_full_render')
+        is_ajax_full_render or
+        is_test_mode_full_render
     )
     # in case of web crawler, the placeholder shouldn't be wrapped with a <section>
     context['include_by_ajax_no_placeholder_wrapping'] = is_web_crawler
